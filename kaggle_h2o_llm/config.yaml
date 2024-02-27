@@ -1,0 +1,57 @@
+data:
+    schema:
+        question_field: Question
+        answer_field: Response
+        target_field: target
+        context_field: Context
+    train:
+#        path: /kaggle/input/h2oai-predict-the-llm/train.csv
+        path: /home/lkang/Downloads/h2oai-predict-the-llm/train.csv
+    test:
+#        path: /kaggle/input/h2oai-predict-the-llm/test.csv
+        path: /home/lkang/Downloads/h2oai-predict-the-llm/test.csv
+
+
+tokenizer:
+    model_name: microsoft/deberta-v3-large
+#    model_name: bert-base-uncased
+#    model_name: mistralai/Mistral-7B-v0.1
+    label_name: label
+    max_length: 768
+    tokenization_output_fields: "input_ids,token_type_ids,attention_mask,answer_attention_mask"
+    context_mask_field: "context_mask"
+    answer_mask_field: "answer_attention_mask"
+    special_token_answer_start: "[A_START]"
+    special_token_answer_end: "[A_END]"
+    special_token_start: ""
+    special_token_context_start: "[CTX_START]"
+    special_token_context_end: "[CTX_END]"
+    special_token_context_sep: "[CTX_SEP]"
+
+
+model:
+    model_name: microsoft/deberta-v3-large
+#    model_name: bert-base-uncased
+#    model_name: mistralai/Mistral-7B-v0.1
+    class_count: 7
+
+training:
+    partition:
+        cv: 4
+        tvh:
+            train:
+                pct: 0.8
+                label: 0
+            validation:
+                pct: 0.2
+                label: 1
+    num_epoch: 3
+    num_gradient_update_batch: 6
+    random_seed: 123
+    enable_grad_scale: true
+    learning_rate: 7.0e-06
+    min_learning_rate: 1e-6
+    train_batch_size: 4
+    eval_batch_size: 4
+    holdout_batch_size: 4
+    model_output_path: /kaggle/working/model.bin
